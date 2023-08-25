@@ -1,11 +1,11 @@
-# YA KIDS AI - Aiogram бот с набором команд для работы с текстом
+# YA KIDS AI - Тестовое наставника kids ai (Яндекса). Aiogram бот с набором команд для работы с текстом
 
 ## Python
     - рекомендуаемая версия 
         - version 3.10 <= python_version <= 3.11.5
 
 ## Запуск
-    - env.dist > env
+    - .env.dist > env
     - TELEGRAM_BOT_TOKEN - токен телеграм бота (str)
     - DIFFUSION_STEP - число влияет на качество генерации изображения (int)
     - EMAIL - почта (str)

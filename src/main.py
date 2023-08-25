@@ -1,3 +1,5 @@
+"""Хендлеры и старт бота"""
+
 import logging
 import random
 from asyncio import to_thread
@@ -19,6 +21,7 @@ start_keyboard = Setup.text_to_image_keyboard
 
 @dp.message_handler(commands=['start'])
 async def start(message: types.Message):
+    """Старт с коммандами и приветствием"""
     await message.reply(
         ('Привет! Бот умеет: \n'
          '1. Генерировать изображение из текста \n '
@@ -33,20 +36,23 @@ async def start(message: types.Message):
 
 
 @dp.message_handler(commands=['help'])
-async def start(message: types.Message):
+async def bot_help(message: types.Message):
+    """Помощь"""
     await bot.send_message(message.chat.id, f'Почта для связи {Conf.EMAIL}')
 
 
 @dp.message_handler(commands=['repo'])
 async def repo(message: types.Message):
+    """Ссылка на репо проекта"""
     await bot.send_message(message.chat.id, Conf.REPO)
 
 
 async def generate_image(message: types.Message, user_id: int):
+    """Создание изображения из текста"""
     try:
         text = await to_thread(LangTranslator.translator.translate, message.text)
         image = await StableDiffusion.text_to_image(text)
-        img_byte_arr = save_to_buffer(partial(image.save, format='PNG'))
+        img_byte_arr = await to_thread(save_to_buffer, partial(image.save, format='PNG'))
         Storage.users_image_wait_list.remove(user_id)
         await bot.send_photo(user_id, img_byte_arr, reply_to_message_id=message.message_id)
     except Exception as e:
@@ -79,6 +85,7 @@ async def get_text_to_image(message: types.Message):
 
 @dp.message_handler(state=Image.text)
 async def generate_text_to_image(message: types.Message, state: FSMContext):
+    """Создание изображения из текста пользователя"""
     await state.finish()
     user_id = message.from_user.id
     await message.reply('Генерация изображения может занять время. Ожидайте')
@@ -112,10 +119,13 @@ async def get_voice_text(message: types.Message):
 
 
 async def generate_audio_from_text(message: types.Message, state: FSMContext, text: str):
+    """Преобразование текста в аудио"""
     await state.finish()
     gtts = await to_thread(LangTranslator.text_to_audio, text)
     audio_byte_arr = await to_thread(save_to_buffer, gtts.write_to_fp)
-    await bot.send_voice(message.from_user.id, audio_byte_arr, reply_to_message_id=message.message_id)
+    await bot.send_voice(
+        message.from_user.id, audio_byte_arr, reply_to_message_id=message.message_id
+    )
 
 
 @dp.message_handler(state=Voice.text)
@@ -132,4 +142,4 @@ async def my_story(message: types.Message, state: FSMContext):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, relax=0.5)
+    executor.start_polling(dp, relax=0.4)

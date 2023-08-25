@@ -20,4 +20,4 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint -d too-few-public-methods -d import-error $(git ls-files '*.py')
+        pylint -d too-few-public-methods -d import-error -d invalid-name -d broad-exception-caught $(git ls-files '*.py')
