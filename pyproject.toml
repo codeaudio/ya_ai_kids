@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "yandex-ai-kids"
+version = "0.1.0"
+description = ""
+authors = ["ivan.kapustin ivan07m@gmail.com"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = "1.0.0"
+aiogram = "2.25.1"
+
+latent-diffusion = {git = "https://github.com/bfirsh/stable-diffusion.git"}
+deep-translator = "1.11.4"
+transformers = "^4.32.0"
+diffusers = "^0.20.0"
+accelerate = "^0.22.0"
+wikipedia = "^1.4.0"
+gtts = "2.3.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
